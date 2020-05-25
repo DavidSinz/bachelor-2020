@@ -7,9 +7,9 @@
 
 ### Voraussetzungen
 
--	Linux mit Ubuntu 20.04 (Andere Distributionen wurden nicht getestet)
--	CUPS (Common Unix Printer System)
--	Drucker
+- Linux mit Ubuntu 20.04 (Andere Distributionen wurden nicht getestet)
+- CUPS (Common Unix Printer System)
+- Drucker
 
 CUPS ist als wichtiger Bestandteil bei Linux enthalten und im Browser sollte mit ```http://localhost:631/``` das Web-Interface erreichbar sein. Sollte CUPS noch nicht vorinstalliert sein, dann kann es mit ```$ sudo apt-get install cups cups-client cups-bsd``` installiert werden. Weitere Informationen zur Installation sind hier aufzufinden: https://wiki.ubuntuusers.de/CUPS/. 
 
