@@ -1,0 +1,52 @@
+#!/bin/bash
+
+logfile=/tmp/watermarkpdf.log
+watermark=/etc/cups/barcode.pdf
+
+tempdir=$(mktemp -d)
+
+echo $(date) >> $logfile
+echo "	job: $1" >> $logfile
+echo "	user: $2" >> $logfile
+echo "	title: $3" >> $logfile
+echo "	numcopies: $4" >> $logfile
+echo "	options: $5" >> $logfile
+echo "	filename: $6" >> $logfile
+echo "	(tempdir: $tempdir)" >> $logfile
+
+# Command line arguments
+job="$1"
+user="$2"
+title="$3"
+numcopies="$4"
+options="$5"
+filename="$6"
+
+code="$1"
+
+if [ -z "$filename" ] ; then
+filename="-"
+fi
+
+if [ $# -ge 7 ]; then
+cat $6 > $tempdir/ps.in
+else
+cat > $tempdir/ps.in
+fi
+
+echo "	Inhalt von tmp ordner" >> $logfile
+echo "		ls $tempdir" >> $logfile
+
+# convert Postscript to PDF
+/usr/bin/ps2pdf $tempdir/ps.in $tempdir/pdf.in 2>>$logfile
+
+# watermarking
+#/usr/bin/pdftk $tempdir/pdf.in stamp "$watermark" output $tempdir/pdf.out 2>>$logfile
+/etc/cups/pdfencoder $tempdir/pdf.in "$1" "$3" 2>>$logfile # Probleme beim Title mit escape characters
+
+# convert PDF to Postscript
+#/usr/bin/pdftops $tempdir/pdf.out - 2>>$logfile
+/usr/bin/pdftops $tempdir/document-output.pdf - 2>>$logfile
+
+# clean-up
+rm -rf $tempdir

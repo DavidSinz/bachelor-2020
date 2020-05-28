@@ -1,0 +1,14 @@
+#
+# User generated MIME types file for CUPS.
+#
+# This file was created for the declaration of custom filters for cups.
+# Author: David Sinz
+# Date: 05-17-2020
+#
+
+########################################################################
+#
+# Custom filters ...
+#
+
+application/mypdfprefilter
