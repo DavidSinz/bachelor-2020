@@ -23,5 +23,8 @@ class Locate:
 					result = subprocess.run(['pdfinfo', file_path], stdout=subprocess.PIPE)
 					if self.title in str(result.stdout):
 						result_paths.append(file_path)
-		return result_paths[0]
+		if len(result_paths) > 0:
+			return result_paths[0]
+		else:
+			return 'no filepath'
 
