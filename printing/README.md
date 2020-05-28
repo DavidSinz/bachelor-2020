@@ -18,7 +18,7 @@ Ein eingerichteter Drucker mit CUPS ist ebenfalls wichtig, da für eine erfolgre
 
 ### Anleitung
 
-Die Bestandteile, die in dieser Anleitung zu Einsatz kommen, sind in diesem Repository enthalten und können kopiert und eingefügt werden. 
+Die Bestandteile, die in dieser Anleitung zu Einsatz kommen, sind im Ordner **install** enthalten und können kopiert und eingefügt werden. 
 
 
 **Schritt 1:** Lege die Datei ```mypdfprefilter``` im CUPS Filter-Ordner ```/usr/lib/cups/filter/``` ab. 
