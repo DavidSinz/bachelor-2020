@@ -1,2 +1,7 @@
 printing-env
 tests
+__pycache__
+build
+dist
+*.spec
+.gitignore
