@@ -38,7 +38,7 @@ $ sudo chmod 755 mypdfprefilter
 ```
 
 
-**Schritt 4:** Lege die Datei ```local.types``` im Verzeichnis ```/etc/cups/``` ab und passe die Berechtigungen an, sodass diese den Berechtigungen der anderen ```*.types``` Dateien in diesem Verzeichnis gleichen.
+**Schritt 4:** Lege die Dateien ```local.types``` und ```pdfencoder```  im Verzeichnis ```/etc/cups/``` ab und passe die Berechtigungen an, sodass diese den Berechtigungen der anderen ```*.types``` Dateien in diesem Verzeichnis gleichen.
 
 
 **Schritt 5:** Stoppe und starte Cups neu um die änderungen wirksam zu machen:
