@@ -1,0 +1,54 @@
+#!/bin/bash
+# installierte pakete:
+# qrencode: sudo apt-get install qrencode
+# ghostscript: sudo apt-get install ghostscript (vorinstalliert)
+
+logfile=/tmp/barcodefilter.log
+#watermark=/etc/cups/barcode.pdf
+
+tempdir=$(mktemp -d)
+
+wmhead="%!PS\n<<\n/EndPage\n{\n2 eq { pop false }\n{\ngsave"
+wmfoot="grestore\ntrue\n} ifelse\n} bind\n>> setpagedevice"
+
+# Command line arguments
+job="$1"
+user="$2"
+title="$3"
+numcopies="$4"
+options="$5"
+filename="$6"
+
+echo "$(date); job: $1; user: $2; title: $3; numcopies: $4; options: $5" >> $logfile
+
+if [ -z "$filename" ] ; then
+filename="-"
+fi
+
+if [ $# -ge 7 ]; then
+cat $6 > $tempdir/ps.in
+else
+cat > $tempdir/ps.in
+fi
+
+# convert Postscript to PDF
+#/usr/bin/ps2pdf $tempdir/ps.in $tempdir/pdf.in 2>>$logfile
+
+# watermarking
+#/usr/bin/pdftk $tempdir/pdf.in stamp "$watermark" output $tempdir/pdf.out 2>>$logfile
+
+# convert PDF to Postscript
+#/usr/bin/pdftops $tempdir/pdf.out - 2>>$logfile
+
+qrencode -t EPS -o $tempdir/qrcode.eps 'Hallo Welt!' 2>>$logfile
+
+echo -e $wmhead >> $tempdir/watermark.ps
+grep -v '^%' $tempdir/qrcode.eps >> $tempdir/watermark.ps
+echo -e $wmfoot >> $tempdir/watermark.ps
+
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$tempdir/ps.out $tempdir/watermark.ps $tempdir/ps.in 2>>$logfile
+
+ps2ps $tempdir/ps.out - 2>>$logfile
+
+# clean-up
+rm -rf $tempdir

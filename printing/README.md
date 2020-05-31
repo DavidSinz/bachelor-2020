@@ -18,27 +18,27 @@ Ein eingerichteter Drucker mit CUPS ist ebenfalls wichtig, da für eine erfolgre
 
 ### Anleitung
 
-Die Bestandteile, die in dieser Anleitung zu Einsatz kommen, sind im Ordner **install** enthalten und können kopiert und eingefügt werden. 
+Die Bestandteile, die in dieser Anleitung zu Einsatz kommen, sind im **install** und **printing** Ordner enthalten und können kopiert und eingefügt werden. 
 
 
-**Schritt 1:** Lege die Datei ```mypdfprefilter``` im CUPS Filter-Ordner ```/usr/lib/cups/filter/``` ab. 
+**Schritt 1:** Lege die Datei ```barcodefilter``` im CUPS Filter-Ordner ```/usr/lib/cups/filter/``` ab. 
 
 
 **Schritt 2:** Passe die Berechtigungen des Filters an, sodass sie den Berechtigungen der anderen Filter in diesem Verzeichnis gleichen: 
 
 ```bash
-$ sudo chmod 755 mypdfprefilter
+$ sudo chmod 755 barcodefilter
 ```
 
 
 **Schritt 3:** Öffne die PPD-Datei des installierten Druckertreibers, welche sich im Verzeichnis ```/etc/cups/ppd/``` befindet, und füge oberhalb der anderen CUPS-Filtereinträge, welche mit ```*cupsFilter: … ``` gekennzeichnet sind, folgende Zeile hinzu:
 
 ```
-*cupsPreFilter: "application/vnd.cups-postscript 0 mypdfprefilter"
+*cupsPreFilter: "application/vnd.cups-postscript 0 barcodefilter"
 ```
 
 
-**Schritt 4:** Lege die Dateien ```pdfencoder``` und ```local.types```  im Verzeichnis ```/etc/cups/``` ab und passe die Berechtigungen der ```local.types``` Datei an, sodass diese den Berechtigungen der anderen ```*.types``` Dateien in diesem Verzeichnis gleichen.
+**Schritt 4:** Lege die Datei ```local.types```  im Verzeichnis ```/etc/cups/``` ab und passe die Berechtigungen der Datei an, sodass diese den Berechtigungen der anderen ```*.types``` Dateien in diesem Verzeichnis gleichen.
 
 
 **Schritt 5:** Stoppe und starte Cups neu um die änderungen wirksam zu machen:

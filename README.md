@@ -31,5 +31,5 @@ Um eine robuste und funktionierende Umsetzung des Programms durchzuführen, werd
 2. Druckerprogramm: Common Unix Printer System (CUPS)
 3. Programmiersprachen: Python 3.8, Shellskriptsprache
 
-Des Weiteren werden folgende Python Module verwendet, diese können jedoch im weiteren Projektverlauf variieren: *OpenCV*, *PyQRCode*, *PyPDF2* und *reportlab*.
+Des Weiteren werden folgende Libraries verwendet, diese können jedoch im weiteren Projektverlauf variieren: *ghostscript*, *qrencode*.
 
