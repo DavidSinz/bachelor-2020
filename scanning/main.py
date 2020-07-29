@@ -1,20 +1,27 @@
-#!/usr/bin/python
+# !/usr/bin/python
 
 # import modules
 import sys
+import os
 import getopt
 import logging
 from PIL import Image
 from pyzbar.pyzbar import decode
-
-# import ghostscript
-
+import ghostscript
+import locale
 
 # import custom
 import database
 
+import logging
 
+logging.basicConfig(filename='test.log', level=logging.DEBUG, format='%(asctime)s %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
+
+
+# it runs from main function after program receives image file it decodes barcode data.
 def decode_code(file_name):
+    logging.info('Barcode decoding is done here')
     data_objects = decode(Image.open(file_name))
     doc_id = -1
 
@@ -26,53 +33,172 @@ def decode_code(file_name):
     return doc_id
 
 
+# when you press 'a' in cmd this function runs to register new file/doc.
 def register_doc():
-    pass
+    entry1 = input('Qr Code: ')
+    entry2 = input('file_name: ')
+    entry3 = input('Path: ')
+    entry4 = input('insert_date: ')
+    entry5 = input('creation_date: ')
+    entry6 = input('date_of_update: ')
+    entry7 = input('date_of_last_access: ')
+    entry8 = input('file_type: ')
+    entry9 = input('size: ')
+    entry10 = input('attribute: ')
+    entry11 = input('optionsText: ')
+
+    d = database.Database()
+    d.insert_into(entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8, entry9, entry10, entry11)
+    logging.info('Values being entered into the database')
 
 
-def pdf_to_image():
-    # TODO with ghostscript
-    pass
+# this contain industry level ghostscript to convert pdf to png , Reference : ActiveState.com
+def pdf_to_image(original, to_convert):
+    # this is a wrapper function for the actual conversion function
+    args = ["pef2jpeg",  # actual value doesn't matter
+            "-dNOPAUSE",
+            "-sDEVICE=jpeg",
+            "-r144",
+            "-sOutputFile=" + to_convert,
+            original]
+
+    encoding = locale.getpreferredencoding()
+    args = [a.encode(encoding) for a in args]
+
+    ghostscript.Ghostscript(*args)
+    logging.info('Donewith pdf to png conversion')
+    data = decode_code(to_convert)
+    db = database.Database()
+
+    if data >= 0:
+        check_lst = db.select_from(data)
+        logging.info('Step to find the QR code in db for the converted image.')
+
+        if check_lst == []:
+            print('\nNo data available for this code in db.')
+        else:
+
+            print(check_lst)
 
 
+# this function runs from the lines b/w 175 to 195 of main function,it checks the file format
 def check_file_format(file_name):
     try:
         Image.open(file_name)
+        logging.info('Image is being processed in the check file format function')
         return True
+
     except Exception as e:
         print(e)
         if file_name.lower().endswith('.pdf'):
-            pdf_to_image()
+            changed_filename = file_name.replace('.pdf', '.png')
+
+            pdf_to_image(file_name, changed_filename)
+            logging.info('Conversion of pdf to png starts')
+
+
+# this is the main function for the command line's opt of deleting file
+def file_del(file):
+    try:
+        file_name = 'C:/Users/Moiz/PycharmProjects/BarCodeExtractor/' + file
+        os.remove(file_name)
+        logging.info('File deleted with the name')
+    except PermissionError and FileNotFoundError:
+        print('This file is open somewhere else or there is no such file')
 
 
 def main(argv):
+    # This is the main and the first function to be run from here.
+
     input_file = ''
-
+    # intitalizing all the commands usable in cmd
     try:
-        opts, args = getopt.getopt(argv, 'hi:', ['i_file='])
+        opts, args = getopt.getopt(argv, 'hi:aud:sv:f:', ['', 'i_file=', 'delete_query=', 'view_by_id', 'file_del'])
+    # exception if the command is not in the recorded list
     except getopt.GetoptError:
-        print('usage: main.py -i <input_file>')
+        logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+        logging.warning('You are using any wrong command')
+        print('this is a wrong command,refer to help(-h)\n')
         sys.exit(2)
-
+    # below all the functionalities of the commands have explained
     for opt, arg in opts:
-        if opt == '-h':
+        # help function
+        if opt in ['-h']:
             print('usage: main.py -i <input_file>')
+            print('usage: main.py -a adds to database')
+            print('usage: main.py -u  updates the database')
+            print('usage: main.py -d  <give_id_to_delete_records>')
+            print('usage: main.py -s view every record')
+            print('usage: main.py -v <qrcode_to_view>')
+            print('usage: main.py -f <input_file_to_delete>')
+
             sys.exit()
+        # file_input
+
         elif opt in ("-i", "--i_file"):
+
             input_file = arg
+            logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+            logging.info('Input file command is executed successfully')
+        # adding records to database
+        elif opt in ('-a'):
+            register_doc()
+
+        # updating data base function
+        elif opt in ['-u']:
+            query = input('Query?: ')
+            d = database.Database()
+            d.update(query)
+            logging.info('Update query executed')
+        # to delete any record in the database
+        elif opt in ['-d', '--delete_query']:
+            d = database.Database()
+            d.delete(arg)
+            logging.warning('The values corresponding to this id have been deleted permanently')
+        # viewing records of database
+        elif opt in ['-s']:
+
+            d = database.Database()
+            d.select_all()
+        # viewing records by particular id
+        elif opt in ['-v', '--view_by_id']:
+            db = database.Database()
+            c = db.select_from(arg)
+            print(c)
+        # deleting any file functionality
+        elif opt in ['-f', '--file_del']:
+            file_del(arg)
+
+    # Line 175 to 195 checks if there is file if the file is valid if it's pdf so it is converted to png and then data corresponding to the file is displayed!
 
     if len(input_file) > 0:
         print('Input file is: ', input_file)
+        logging.info('The file being inputted is eligible')
         if check_file_format(input_file):
+            logging.info('The file has the correct format')
             print('Input is a image file')
             data = decode_code(input_file)
             db = database.Database()
 
             if data >= 0:
-                db.select_from(data)
+
+                check_lst = db.select_from(data)
+                logging.info('Step to find the QR code in db.')
+
+                if check_lst == []:
+                    print('\nNo data available for this code in db')
+                else:
+                    print(check_lst)
+
+
+    # this runs after the command is finished executing
     else:
-        print('No input file was given. Try -h for help')
+        print('\nProgram Ends, -h for more commands')
+        logging.info('The command executed successfully')
 
 
 if __name__ == "__main__":
+    # just a reminder
+    print('\n', '*' * 30, 'Disclaimer', '*' * 30)
+    print('\nKeep the file to be uploaded in the same folder or give the full path here.\n')
     main(sys.argv[1:])

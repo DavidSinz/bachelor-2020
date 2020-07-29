@@ -7,37 +7,64 @@ class Database:
         self.conn = sqlite3.connect('db/document.db')
         self.create_table()
         self.curs = self.conn.cursor()
-
+    #CreatesTable
     def create_table(self):
-        try:
-            self.conn.execute("""CREATE TABLE document (
-                              id             INT             PRIMARY KEY         NOT NULL,
-                              title          TEXT            NOT NULL,
-                              name           TEXT            NOT NULL,
-                              path           TEXT            NOT NULL,
-                              time           TEXT            NOT NULL)""")
-            self.conn.commit()
-            print('Table was successfully created')
-        except sqlite3.OperationalError:
-            print('Table was already created')
 
+        self.conn.execute("""CREATE TABLE IF NOT EXISTS document (
+                              id                        STRING           PRIMARY KEY         NOT NULL,
+                              code_id                   STRING           NOT NULL,
+                              file_name                 STRING           NOT NULL,
+                              path                      STRING           NOT NULL,
+                              insert_date               STRING           NOT NULL,
+                              creation_date             STRING           NOT NULL,
+                              date_of_update            STRING           NOT NULL,
+                              date_of_last_access       STRING           NOT NULL,
+                              file_type                 STRING           NOT NULL,
+                              size                      STRING           NOT NULL,   
+                              attribute                 STRING           NOT NULL,         
+                              optionsTEXT               STRING           NOT NULL)""")
+        self.conn.commit()
+
+    #to display data of choice
     def select_from(self, index):
-        self.curs.execute("SELECT * FROM document WHERE id = {}".format(index))
-        print(self.curs.fetchall())
+        count_for =  self.curs.execute("SELECT * FROM document")
+        length = len(count_for.fetchall())
+        self.curs.execute("SELECT * FROM document WHERE QR_code = {}".format(index))
+        return self.curs.fetchall()
+        self.conn.commit()
+    #displays all data
+    def select_all(self):
+        all_data =self.curs.execute("SELECT * FROM document").fetchall()
+        print(all_data)
+
+
+    #Insert
+    def insert_into(self,QR_code,file_name,path,insert_date,creation_date,date_of_update,date_of_last_access,file_type,size,attribute,optionsTEXT):
+        #make_id makes the id automaticallyy whenever new data is stored
+        count = self.curs.execute("SELECT * FROM document").fetchall()
+        length = len(count)
+        make_id = 'Q0'+ str(length+1)
+        self.curs.execute("Insert into document(id,QR_code,file_name,path,insert_date,creation_date,date_of_update,date_of_last_access,file_type,size,attribute,optionsTEXT) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                          (make_id,QR_code,file_name,path,insert_date,creation_date,date_of_update,date_of_last_access,file_type,size,attribute,optionsTEXT))
+
         self.conn.commit()
 
-    def insert_into(self):
-        self.curs.execute("INSERT INTO document (id, title, name, path, time) \
-              VALUES (0, 'test', 'test name', '/path/test/doc.pdf', '2020-07-15 15:10:03.123')")
+    #Update
+
+    def update(self, query):
+
+        self.curs.execute(query)
         self.conn.commit()
 
-    def update(self, index):
-        self.curs.execute("UPDATE document SET path = '/other/path/doc.pdf' WHERE id = {}".format(index))
+    #Delete
+
+    def delete(self,id):
+        self.curs.execute("DELETE FROM document WHERE id = {}".format(id))
+
         self.conn.commit()
 
-    def delete(self, index):
-        self.curs.execute("DELETE FROM document WHERE id = {}".format(index))
-        self.conn.commit()
+    #Closing DB
 
     def __del__(self):
         self.conn.close()
+
