@@ -1,16 +1,17 @@
-from document_family import DocumentFamily
+class Document:
 
+    # init document
+    def __init__(self, name, path, title, f_type, code):
+        self.name = name
+        self.path = path
+        self.title = title
+        self.f_type = f_type
+        self.code = code
 
-class Document(DocumentFamily):
+    # set path
+    def set_path(self, path):
+        self.path = path
 
-    def __init__(self, file_name):
-        super().__init__()
-
-    def set_path(self):
-        pass
-
+    # return path
     def get_path(self):
-        pass
-
-    def delete(self):
-        pass
+        return self.path

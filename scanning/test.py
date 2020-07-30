@@ -20,6 +20,9 @@
 # db.insert_into(f"id, file_name, insert_date", f"1, 'hello', '{time.strftime('%Y-%m-%d %H:%M:%S')}'")
 # db.select_all()
 
-import main
+from database import Database
 
-main.decode_code('test/example.jpg')
+d = Database('test')
+d.create_table_document()
+d.insert_document()
+print(d.select_all_document())

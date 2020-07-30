@@ -8,10 +8,8 @@ from pyzbar.pyzbar import decode
 # import ghostscript
 
 # import custom
-from log import Log
+import output
 from document import Document
-
-log = Log()
 
 
 # check for valid code format
@@ -76,11 +74,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hi:", ["ifile="])
     except getopt.GetoptError:
-        log.print('test.py -i <input_file>')
+        output.print_data("invalid command. use -h for help")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            log.print('test.py -i <input_file>')
+            output.print_data('test.py -i <input_file>')
             sys.exit()
         elif opt in ("-i", "--ifile"):
             input_file = arg
@@ -91,7 +89,7 @@ def main(argv):
             doc = Document(input_file)
             handle_document(doc)
         else:
-            log.print("given file has no identifier")
+            output.print_data("input file has no identifier")
 
 
 if __name__ == "__main__":
