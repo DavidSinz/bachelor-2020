@@ -4,41 +4,37 @@
 import sys
 import os
 import getopt
-import logging
+import log
 from PIL import Image
 from pyzbar.pyzbar import decode
-import ghostscript
+# import ghostscript
 import locale
 
 # import custom
 import database
 
-import logging
-
-logging.basicConfig(filename='test.log', level=logging.DEBUG, format='%(asctime)s %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
-
 
 # it runs from main function after program receives image file it decodes barcode data.
 def decode_code(file_name):
-    logging.info('Barcode decoding is done here')
+    log.info('Barcode decoding is done here')
     data_objects = decode(Image.open(file_name))
     doc_id = -1
 
     for obj in data_objects:
         print('Type : ', obj.type)
         print('Data : ', obj.data)
-        doc_id = int(obj.data.decode("utf-8"))
+        doc_id = str(obj.data.decode("utf-8"))
 
     return doc_id
 
 
 # when you press 'a' in cmd this function runs to register new file/doc.
 def register_doc():
-    entry1 = input('Qr Code: ')
+    entry1 = input('code_id: ')
     entry2 = input('file_name: ')
     entry3 = input('Path: ')
     entry4 = input('insert_date: ')
+
     entry5 = input('creation_date: ')
     entry6 = input('date_of_update: ')
     entry7 = input('date_of_last_access: ')
@@ -49,43 +45,52 @@ def register_doc():
 
     d = database.Database()
     d.insert_into(entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8, entry9, entry10, entry11)
-    logging.info('Values being entered into the database')
+    log.info('Values being entered into the database')
 
 
 # this contain industry level ghostscript to convert pdf to png , Reference : ActiveState.com
 def pdf_to_image(original, to_convert):
     # this is a wrapper function for the actual conversion function
-    args = ["pef2jpeg",  # actual value doesn't matter
-            "-dNOPAUSE",
-            "-sDEVICE=jpeg",
-            "-r144",
-            "-sOutputFile=" + to_convert,
-            original]
+    try:
+        args = ["pef2jpeg",  # actual value doesn't matter
+                "-dNOPAUSE",
+                "-sDEVICE=jpeg",
+                "-r144",
+                "-sOutputFile=" + to_convert,
+                original]
 
-    encoding = locale.getpreferredencoding()
-    args = [a.encode(encoding) for a in args]
+        encoding = locale.getpreferredencoding()
+        args = [a.encode(encoding) for a in args]
 
-    ghostscript.Ghostscript(*args)
-    logging.info('Donewith pdf to png conversion')
-    data = decode_code(to_convert)
-    db = database.Database()
+        ghostscript.Ghostscript(*args)
+        log.info('Donewith pdf to png conversion')
+        data = decode_code(to_convert)
+        db = database.Database()
 
-    if data >= 0:
-        check_lst = db.select_from(data)
-        logging.info('Step to find the QR code in db for the converted image.')
+        if data != None and data[0:5].upper() == 'CODE:':
 
-        if check_lst == []:
-            print('\nNo data available for this code in db.')
+            check_lst = db.select_from(data)
+            log.info('Step to find the QR code in db.')
+
+            if check_lst == []:
+                print('\nNo data available for this code in db')
+            else:
+                print(check_lst)
         else:
-
-            print(check_lst)
+            print('File has no or invalid barcode.')
+            print('Register this file in db whatsoever\n')
+            log.info('File has no or invalid barcode.')
+            register_doc()
+    except Exception as e:
+        print(e)
+        sys.exit()
 
 
 # this function runs from the lines b/w 175 to 195 of main function,it checks the file format
 def check_file_format(file_name):
     try:
         Image.open(file_name)
-        logging.info('Image is being processed in the check file format function')
+        log.info('Image is being processed in the check file format function')
         return True
 
     except Exception as e:
@@ -94,7 +99,7 @@ def check_file_format(file_name):
             changed_filename = file_name.replace('.pdf', '.png')
 
             pdf_to_image(file_name, changed_filename)
-            logging.info('Conversion of pdf to png starts')
+            log.info('Conversion of pdf to png starts')
 
 
 # this is the main function for the command line's opt of deleting file
@@ -102,7 +107,7 @@ def file_del(file):
     try:
         file_name = 'C:/Users/Moiz/PycharmProjects/BarCodeExtractor/' + file
         os.remove(file_name)
-        logging.info('File deleted with the name')
+        log.info('File deleted with the name')
     except PermissionError and FileNotFoundError:
         print('This file is open somewhere else or there is no such file')
 
@@ -116,8 +121,8 @@ def main(argv):
         opts, args = getopt.getopt(argv, 'hi:aud:sv:f:', ['', 'i_file=', 'delete_query=', 'view_by_id', 'file_del'])
     # exception if the command is not in the recorded list
     except getopt.GetoptError:
-        logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-        logging.warning('You are using any wrong command')
+        log.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+        log.warning('You are using any wrong command')
         print('this is a wrong command,refer to help(-h)\n')
         sys.exit(2)
     # below all the functionalities of the commands have explained
@@ -138,8 +143,8 @@ def main(argv):
         elif opt in ("-i", "--i_file"):
 
             input_file = arg
-            logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-            logging.info('Input file command is executed successfully')
+            log.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+            log.info('Input file command is executed successfully')
         # adding records to database
         elif opt in ('-a'):
             register_doc()
@@ -149,12 +154,12 @@ def main(argv):
             query = input('Query?: ')
             d = database.Database()
             d.update(query)
-            logging.info('Update query executed')
+            log.info('Update query executed')
         # to delete any record in the database
         elif opt in ['-d', '--delete_query']:
             d = database.Database()
             d.delete(arg)
-            logging.warning('The values corresponding to this id have been deleted permanently')
+            log.warning('The values corresponding to this id have been deleted permanently')
         # viewing records of database
         elif opt in ['-s']:
 
@@ -173,28 +178,33 @@ def main(argv):
 
     if len(input_file) > 0:
         print('Input file is: ', input_file)
-        logging.info('The file being inputted is eligible')
+        log.info('The file being inputted is eligible')
         if check_file_format(input_file):
-            logging.info('The file has the correct format')
+            log.info('The file has the correct format')
             print('Input is a image file')
             data = decode_code(input_file)
             db = database.Database()
 
-            if data >= 0:
+            if data != None and data[0:5].upper() == 'CODE:':
 
                 check_lst = db.select_from(data)
-                logging.info('Step to find the QR code in db.')
+                log.info('Step to find the QR code in db.')
 
                 if check_lst == []:
                     print('\nNo data available for this code in db')
                 else:
                     print(check_lst)
+            else:
+                print('File has no or invalid barcode.')
+                print('Register this file in db whatsoever\n')
+                log.info('File has no or invalid barcode.')
+                register_doc()
 
 
     # this runs after the command is finished executing
     else:
         print('\nProgram Ends, -h for more commands')
-        logging.info('The command executed successfully')
+        log.info('The command executed successfully')
 
 
 if __name__ == "__main__":
