@@ -2,13 +2,14 @@
 
 # import modules
 import sys
+import getopt
 from PIL import Image
 from pyzbar.pyzbar import decode
 # import ghostscript
 
 # import custom
 from log import Log
-from console_controller import ConsoleController
+from document import Document
 
 log = Log()
 
@@ -39,7 +40,7 @@ def file_format_is_supported(file_name):
         Image.open(file_name)
         return True
     except Exception as e:
-        log.display(e)
+        log.print(e)
 
 
 def convert_pdf_to_jpg(file_name):
@@ -65,10 +66,32 @@ def convert_pdf_to_jpg(file_name):
     pass
 
 
-def main(argv):
-    controller = ConsoleController(argv)
-
+def handle_document(doc):
     pass
+
+
+def main(argv):
+    # init all the usable commands
+    input_file = ''
+    try:
+        opts, args = getopt.getopt(argv, "hi:", ["ifile="])
+    except getopt.GetoptError:
+        log.print('test.py -i <input_file>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            log.print('test.py -i <input_file>')
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            input_file = arg
+
+    if len(input_file) > 0:
+        code = decode_code(input_file)
+        if code is not None:
+            doc = Document(input_file)
+            handle_document(doc)
+        else:
+            log.print("given file has no identifier")
 
 
 if __name__ == "__main__":
