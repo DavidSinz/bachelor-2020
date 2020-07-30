@@ -20,7 +20,6 @@
 # db.insert_into(f"id, file_name, insert_date", f"1, 'hello', '{time.strftime('%Y-%m-%d %H:%M:%S')}'")
 # db.select_all()
 
-from log import Log
+import main
 
-l = Log
-l.display_list([2,3,4,5,76,8,8,3])
+main.decode_code('test/example.jpg')
