@@ -5,17 +5,12 @@
 #
 
 # import built in modules
-import os
-import sys
-import time
-import logging
-import sqlite3 as db_engine
-
-from pathlib import Path
+from sys import argv
 
 # import custom modules
-from database import Database
 from document import Document
+from database import Database
+from file_mgr import FileManager
 
 # file names which are used in the program
 DB_FILE = "document_manager.db"
@@ -96,8 +91,9 @@ db_delete = {
 # database queries
 #
 
-document = Document(DOCUMENT_DIRECTORY)
-database = Database(db_engine, DATABASE_DIRECTORY + DB_FILE, db_create)
+document = Document()
+database = Database(DATABASE_DIRECTORY + DB_FILE, db_create)
+file_mgr = FileManager(DOCUMENT_DIRECTORY)
 
 
 ##############################################################################
@@ -110,8 +106,9 @@ database = Database(db_engine, DATABASE_DIRECTORY + DB_FILE, db_create)
 #
 
 
-def register_printed_document(file_name, db_data):
+def register_printed_document(file_name):
     document.save_printed_document(file_name)
+    db_data = document.get_
     database.insert(db_data)
 
 
@@ -203,13 +200,17 @@ def delete_documents_of_set(set_id):
 # Main method which handles the all running processes
 #
 
-def main(argv):
+def main(args):
     # register_printed_document("fdsf", db_insert)
-    print(get_document_information(0, db_select))
-    update_document_information(0, db_update)
+    # print(get_document_information(0, db_select))
+    # update_document_information(0, db_update)
     # delete_document(0, db_delete)
-    print(get_document_information(0, db_select))
+    # print(get_document_information(0, db_select))
+
+    # file_mgr.save("test/example.jpg", "test")
+    # file_mgr.delete("test")
+    pass
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(argv[1:])

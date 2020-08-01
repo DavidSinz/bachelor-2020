@@ -1,3 +1,6 @@
+import sqlite3
+
+
 class Database:
 
     ##########################################################################
@@ -9,19 +12,24 @@ class Database:
 
     ##########################################################################
     #
-    # '__init__': This constructor connects to a database with a given
-    # 'database_engine' and a given 'database_file'.
+    # '__init__'
+    #
+    # This constructor connects to a database with a given 'database_engine'
+    # and a given 'database_file'. It also calls the 'create_table' method
+    # which creates new database tables.
     #
 
-    def __init__(self, database_engine, database_file, create_table_data):
-        self.conn = database_engine.connect(database_file)
+    def __init__(self, database_file, table_data):
+        self.conn = sqlite3.connect(database_file)
         self.curs = self.conn.cursor()
-        self.create_table(create_table_data)
+        self.create_table(table_data)
 
     ##########################################################################
     #
-    # '__del__': This destructor disconnects from the database, if this
-    # instance gets deleted.
+    # '__del__'
+    #
+    # This destructor disconnects from the database, if this instance gets
+    # deleted.
     #
 
     def __del__(self):
@@ -29,7 +37,9 @@ class Database:
 
     ##########################################################################
     #
-    # 'create_table': This method creates tables with the 'data' parameter.
+    # 'create_table'
+    #
+    # This method creates tables with the 'data' parameter.
     # The 'data' parameter is a dictionary, where the keys table names
     # represent and the values are arrays which store the columns to create.
     # The format of the 'data' dictionary has a format like the following
@@ -57,7 +67,9 @@ class Database:
 
     ##########################################################################
     #
-    # 'insert': This method inserts data into database tables. The parameter
+    # 'insert'
+    #
+    # This method inserts data into database tables. The parameter
     # 'data' has the following format:
     # data = {
     #   "table1": {"col1": "val1", "col2": "val2", "col3": "val3"},
@@ -75,7 +87,9 @@ class Database:
 
     ##########################################################################
     #
-    # 'select': This method selects entries from a database table. The
+    # 'select'
+    #
+    # This method selects entries from a database table. The
     # parameter 'data' has the following format:
     # data = {
     #   "table1": {"column": ["*"], "where": "col1 = val1"},
@@ -100,7 +114,9 @@ class Database:
 
     ##########################################################################
     #
-    # 'update': This method updates entries of a database table. The
+    # 'update'
+    #
+    # This method updates entries of a database table. The
     # parameter 'data' has the following format:
     # data = {
     #   "table1": {
@@ -133,7 +149,9 @@ class Database:
 
     ##########################################################################
     #
-    # 'delete': This method deletes entries from a database table. The
+    # 'delete'
+    #
+    # This method deletes entries from a database table. The
     # parameter 'data' has the following format:
     # data = {
     #   "table1": {},

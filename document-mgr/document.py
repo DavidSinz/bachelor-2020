@@ -1,6 +1,6 @@
 class Document:
 
-    def __init__(self, document_directory):
+    def __init__(self):
         pass
 
     def save_printed_document(self, file_name):
