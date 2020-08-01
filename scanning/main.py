@@ -85,7 +85,6 @@ def main(argv):
             sys.exit()
         elif opt is "-i":
             input_file = arg
-        elif opt is "":
 
     if len(input_file) > 0:
         register_input_file(input_file)
