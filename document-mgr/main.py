@@ -5,9 +5,11 @@
 #
 
 # import built in modules
+import os
 import sys
-import sqlite3 as database_engine
+import time
 import logging
+import sqlite3 as db_engine
 
 from pathlib import Path
 
@@ -28,7 +30,26 @@ LOG_FILE_DIRECTORY = "log/"
 document_data = None
 database_data = []
 
-# database name, tables and query information
+##############################################################################
+#
+# Database information
+#
+# The following variables are used to interact with the database. They are
+# dictionaries with keys as table names and the values as information for
+# database manipulation purposes.
+#
+# 'db_create' is used to create the following three tables:
+# - Table 'document': This table stores most of the information of a document
+# - Table 'printed_document': This table stores information about printed
+#   documents. It uses also data from 'document' and uses therefor a foreign.
+#   key from 'document'.
+# - Table 'scanned_document': This table stores information about scanned
+#   documents. It uses also data from 'document' and uses therefor a foreign
+#   key from 'document'.
+#
+# 'db_insert'
+#
+
 db_create = {
     "document": [
         "id INT PRIMARY KEY",
@@ -46,10 +67,27 @@ db_create = {
         "document_id INT"
     ]
 }
-db_select = {}
-db_insert = {}
-db_update = {}
-db_delete = {}
+db_insert = {
+    "document": {"id": "0", "code": "123", "file_name": "'test.py'", "path": "'/test/'", "insert_date": "'hey'"},
+    "printed_document": {"id": "0", "document_id": "0"}
+}
+db_select = {
+    "document": {"column": ["*"]},
+    "printed_document": {"column": ["id"], "where": "id = 0"}
+}
+db_update = {
+    "document": {
+        "set": {"id": "100", "path": "'jksdhfkjsd'"},
+        "where": "id = 0"
+    },
+    "printed_document": {
+        "set": {"document_id": "3"}
+    }
+}
+db_delete = {
+    "document": {},
+    "printed_document": {"where": "id = 0"}
+}
 
 ##############################################################################
 #
@@ -59,7 +97,7 @@ db_delete = {}
 #
 
 document = Document(DOCUMENT_DIRECTORY)
-database = Database(database_engine, DATABASE_DIRECTORY + DB_FILE)
+database = Database(db_engine, DATABASE_DIRECTORY + DB_FILE, db_create)
 
 
 ##############################################################################
@@ -71,14 +109,15 @@ database = Database(database_engine, DATABASE_DIRECTORY + DB_FILE)
 # database. A copy of the file is saved in the folder 'doc/'
 #
 
-def register_printed_document(file_name):
+
+def register_printed_document(file_name, db_data):
     document.save_printed_document(file_name)
-    database.insert_printed_document(db_insert)
+    database.insert(db_data)
 
 
-def register_scanned_document(file_name):
+def register_scanned_document(file_name, db_data):
     document.save_scanned_document(file_name)
-    database.insert_scanned_document(db_insert)
+    # database.insert(db_data)
 
 
 ##############################################################################
@@ -123,13 +162,15 @@ def get_documents_of_set(set_id):
 # information fields of this document.
 #
 
-def get_document_information(doc_id):
+def get_document_information(doc_id, db_data):
     # document.get_document_information(doc_id)
+    # return database.select(db_data)
     pass
 
 
-def update_document_information(doc_id, data):
-    # document.update_document_information(doc_id, data)
+def update_document_information(doc_id, db_data):
+    # document.update_document_information(doc_id)
+    # database.update(db_data)
     pass
 
 
@@ -142,9 +183,9 @@ def update_document_information(doc_id, data):
 # which origin of a specific document get deleted
 #
 
-def delete_document(doc_id):
+def delete_document(doc_id, db_data):
     # document.delete_document(doc_id)
-    pass
+    database.delete(db_data)
 
 
 def delete_linked_documents(link_id):
@@ -159,42 +200,15 @@ def delete_documents_of_set(set_id):
 
 ##############################################################################
 #
-# Initialize database and create tables
-#
-# This function creates three tables if not already exist which are used to
-# store document information. The 'create_data' is a dictionary which
-# has as keys table names and as values arrays, which store the information
-# to create a column. The format looks as follows:
-#
-# dictionary = {
-#   "table1": ["id PRIMARY KEY", "column2 NOT NULL", "column3"],
-#   "table2": ["index PRIMARY KEY", "example1 NOT NULL", "example2"]
-# }
-#
-# The following tables are created with the given parameter
-#
-# - Table 'document': This table stores most of the information of a document
-#
-# - Table 'printed_document': This table stores information about printed
-#   documents. It inherits also from 'document' and uses therefor a foreign
-#   key from 'document'
-#
-# - Table 'scanned_document': This table stores information about scanned
-#   documents. It inherits also from 'document' and uses therefor a foreign
-#   key from 'document'
-#
-
-def create_database_tables(create_data):
-    database.create_table(create_data)
-
-
-##############################################################################
-#
 # Main method which handles the all running processes
 #
 
 def main(argv):
-    create_database_tables(db_create)
+    # register_printed_document("fdsf", db_insert)
+    print(get_document_information(0, db_select))
+    update_document_information(0, db_update)
+    # delete_document(0, db_delete)
+    print(get_document_information(0, db_select))
 
 
 if __name__ == "__main__":
