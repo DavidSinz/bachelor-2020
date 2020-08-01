@@ -1,15 +1,27 @@
-class DatabaseTable:
-    ############################################################
+class Database:
+    ##########################################################################
+    #
+    # Class Database
+    #
+    # This class initializes a database and creates tables for it, if they
+    # are not already existing.
+    #
+    # '__init__': This constructor connects to a database with a given
+    # 'database_engine' and a given 'database_file'
+    #
+    # 'create_table': This method creates a table with the 'data' parameter.
+    # The 'data' parameter is a dictionary and the key is the 'table_name'
+    # and the value is an array which stores the columns to create
+    #
 
-    # init database table
-    def __init__(self, connection, cursor, table_name):
-        self.conn = connection
-        self.curs = cursor
-        self.name = table_name
+    def __init__(self, database_engine, database_file):
+        self.conn = database_engine.connect(database_file)
+        self.curs = self.conn.cursor()
 
-    # create a table if it's not already existing
     def create_table(self, data):
-        query = f"CREATE TABLE IF NOT EXISTS {self.name} ({data});"
+        table_name = list(data.keys())[0]
+        table_columns = ','.join(data[table_name])
+        query = f"CREATE TABLE IF NOT EXISTS {table_name} ({table_columns});"
         self.conn.execute(query)
         self.conn.commit()
 
@@ -19,6 +31,16 @@ class DatabaseTable:
         self.curs.execute(query)
         data = self.curs.fetchone()
         return data[0]
+
+    # find the next available unique id for a new table row
+    @staticmethod
+    def determine_unique_id(table):
+        index = table.max_of_column("id")
+        if index is None:
+            index = -1
+        return index + 1
+
+
 
     # display data of choice
     def select_from(self, where):
@@ -57,52 +79,7 @@ class DatabaseTable:
         self.curs.execute(query)
         return self.curs.fetchall()
 
-
-class Database:
-
-    # create connection to database
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(f'db/{db_name}.db')
-        self.curs = self.conn.cursor()
-
-        # create instances of class DatabaseTable
-        self.document = DatabaseTable(self.conn, self.curs, 'document')
-        self.digital_doc = DatabaseTable(self.conn, self.curs, 'digital_document')
-        self.scan_doc = DatabaseTable(self.conn, self.curs, 'scan_document')
-        self.create_tables()
-
-    # create tables
-    def create_tables(self):
-        self.document.create_table(
-            "id INT PRIMARY KEY, code INT, file_name VARCHAR(50), path VARCHAR(50), insert_date DATETIME")
-        self.digital_doc.create_table("id INT PRIMARY KEY, document_id INT")
-        self.scan_doc.create_table("id INT PRIMARY KEY, document_id INT")
-
-    # find the next available unique id for a new table row
-    @staticmethod
-    def determine_unique_id(table):
-        index = table.max_of_column("id")
-        if index is None:
-            index = -1
-        return index + 1
-
-    # insert into scan_document and document table
-    def insert_scanned_document(self, data):
-        doc_id = self.determine_unique_id(self.document)
-        scan_id = self.determine_unique_id(self.scan_doc)
-        self.document.insert_into("id, code, file_name, path", f"{doc_id}, {args[0]}, '{args[1]}', '{args[2]}'")
-        self.scan_doc.insert_into("id, document_id", f"{scan_id}, {doc_id}")
-
-    def insert_printed_document(self, data):
-        pass
-
-    def select_ids_of_linked_documents(self, data):
-        return []
-
-    # join two tables and select al columns
-    def select_all_scan_doc(self):
-        return self.scan_doc.select_all_join(self.document, 'document_id', 'id')
-
-    # close database
+    # close the connection to the database, if a instance of this class gets
+    # deleted
     def __del__(self):
         self.conn.close()

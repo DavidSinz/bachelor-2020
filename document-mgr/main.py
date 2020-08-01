@@ -6,7 +6,7 @@
 
 # import built in modules
 import sys
-import sqlite3
+import sqlite3 as database_engine
 import logging
 
 from pathlib import Path
@@ -16,20 +16,36 @@ from database import Database
 from document import Document
 
 # file names which are used in the program
-log_file = "document-manager.log"
+DB_FILE = "document_manager.db"
+LOG_FILE = "document-manager.log"
 
 # directories to store files
-DOCUMENT_DIRECTORY = "/doc/"
-DATABASE_DIRECTORY = "/db/"
-LOG_FILE_DIRECTORY = "/log/"
+DOCUMENT_DIRECTORY = "doc/"
+DATABASE_DIRECTORY = "db/"
+LOG_FILE_DIRECTORY = "log/"
 
 # returned values of database and document methods
 document_data = None
 database_data = []
 
 # database name, tables and query information
-db_name = "document_manager"
-db_tables = []
+db_create = {
+    "document": [
+        "id INT PRIMARY KEY",
+        "code INT",
+        "file_name VARCHAR(50)",
+        "path VARCHAR(50)",
+        "insert_date DATETIME"
+    ],
+    "printed_document": [
+        "id INT PRIMARY KEY",
+        "document_id INT"
+    ],
+    "scanned_document": [
+        "id INT PRIMARY KEY",
+        "document_id INT"
+    ]
+}
 db_select = {}
 db_insert = {}
 db_update = {}
@@ -43,7 +59,7 @@ db_delete = {}
 #
 
 document = Document(DOCUMENT_DIRECTORY)
-database = Database(db_name)
+database = Database(database_engine, DATABASE_DIRECTORY + DB_FILE)
 
 
 ##############################################################################
@@ -55,14 +71,14 @@ database = Database(db_name)
 # database. A copy of the file is saved in the folder 'doc/'
 #
 
-def register_scanned_document(file_name):
-    document.save_scanned_document(file_name)
-    database.insert_scanned_document(db_insert)
-
-
 def register_printed_document(file_name):
     document.save_printed_document(file_name)
     database.insert_printed_document(db_insert)
+
+
+def register_scanned_document(file_name):
+    document.save_scanned_document(file_name)
+    database.insert_scanned_document(db_insert)
 
 
 ##############################################################################
@@ -143,11 +159,42 @@ def delete_documents_of_set(set_id):
 
 ##############################################################################
 #
+# Initialize database and create tables
+#
+# This function creates three tables if not already exist which are used to
+# store document information. The 'create_data' is a dictionary which
+# has as keys table names and as values arrays, which store the information
+# to create a column. The format looks as follows:
+#
+# dictionary = {
+#   "table1": ["id PRIMARY KEY", "column2 NOT NULL", "column3"],
+#   "table2": ["index PRIMARY KEY", "example1 NOT NULL", "example2"]
+# }
+#
+# The following tables are created with the given parameter
+#
+# - Table 'document': This table stores most of the information of a document
+#
+# - Table 'printed_document': This table stores information about printed
+#   documents. It inherits also from 'document' and uses therefor a foreign
+#   key from 'document'
+#
+# - Table 'scanned_document': This table stores information about scanned
+#   documents. It inherits also from 'document' and uses therefor a foreign
+#   key from 'document'
+#
+
+def create_database_tables(create_data):
+    database.create_table(create_data)
+
+
+##############################################################################
+#
 # Main method which handles the all running processes
 #
 
 def main(argv):
-    pass
+    create_database_tables(db_create)
 
 
 if __name__ == "__main__":
