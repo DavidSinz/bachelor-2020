@@ -1,11 +1,5 @@
-# import modules
-import sqlite3
-
-# custom modules
-import output
-
-
 class DatabaseTable:
+    ############################################################
 
     # init database table
     def __init__(self, connection, cursor, table_name):
@@ -16,14 +10,12 @@ class DatabaseTable:
     # create a table if it's not already existing
     def create_table(self, data):
         query = f"CREATE TABLE IF NOT EXISTS {self.name} ({data});"
-        output.debug(query)
         self.conn.execute(query)
         self.conn.commit()
 
     # find the max id
     def max_of_column(self, column):
         query = f"SELECT max({column}) FROM {self.name};"
-        output.debug(query)
         self.curs.execute(query)
         data = self.curs.fetchone()
         return data[0]
@@ -31,35 +23,30 @@ class DatabaseTable:
     # display data of choice
     def select_from(self, where):
         query = f"SELECT * FROM {self.name} WHERE {where};"
-        output.debug(query)
         self.curs.execute(query)
         return self.curs.fetchall()
 
     # display all data
     def select_all(self):
         query = f"SELECT * FROM {self.name};"
-        output.debug(query)
         self.curs.execute(query)
         return self.curs.fetchall()
 
     # insert into table
     def insert_into(self, columns, values):
         query = f"INSERT INTO {self.name} ({columns}) VALUES ({values});"
-        output.debug(query)
         self.curs.execute(query)
         self.conn.commit()
 
     # update table content
     def update(self, setter, where):
         query = f"UPDATE {self.name} SET {setter} WHERE {where};"
-        output.debug(query)
         self.curs.execute(query)
         self.conn.commit()
 
     # delete table content
     def delete(self, where):
         query = f"DELETE FROM {self.name} WHERE {where};"
-        output.debug(query)
         self.curs.execute(query)
         self.conn.commit()
 
@@ -67,9 +54,7 @@ class DatabaseTable:
     def select_all_join(self, table, join_col, t_join_col):
         query = f"""SELECT * FROM {self.name} INNER JOIN {table.name} 
                 ON {self.name}.{join_col} = {table.name}.{t_join_col};"""
-        output.debug(query)
         self.curs.execute(query)
-        output.debug(list(map(lambda x: x[0], self.curs.description)))
         return self.curs.fetchall()
 
 
@@ -102,11 +87,17 @@ class Database:
         return index + 1
 
     # insert into scan_document and document table
-    def insert_scan_doc(self, *args):
+    def insert_scanned_document(self, data):
         doc_id = self.determine_unique_id(self.document)
         scan_id = self.determine_unique_id(self.scan_doc)
         self.document.insert_into("id, code, file_name, path", f"{doc_id}, {args[0]}, '{args[1]}', '{args[2]}'")
         self.scan_doc.insert_into("id, document_id", f"{scan_id}, {doc_id}")
+
+    def insert_printed_document(self, data):
+        pass
+
+    def select_ids_of_linked_documents(self, data):
+        return []
 
     # join two tables and select al columns
     def select_all_scan_doc(self):

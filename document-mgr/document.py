@@ -1,19 +1,18 @@
-# custom modules
-import output
-
-
 class Document:
 
-    def __init__(self):
+    def __init__(self, document_directory):
         pass
 
-    def register(self, file_name):
+    def save_printed_document(self, file_name):
+        pass
+
+    def save_scanned_document(self, file_name):
         pass
 
     def get_document_information(self, doc_id):
         pass
 
-    def get_linked_document_ids(self, link_id):
+    def get_ids_of_linked_documents(self, link_id):
         pass
 
     def get_document_ids_of_set(self, set_id):

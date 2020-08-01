@@ -1,12 +1,49 @@
+##############################################################################
+#
+# Implemented with: Python 3.7
+# Used modules: logging, pathlib, sqlite3, sys
+#
+
+# import built in modules
+import sys
+import sqlite3
+import logging
+
+from pathlib import Path
+
 # import custom modules
-import output
 from database import Database
 from document import Document
 
-# create an instance of the class Document for managing documents and also
-# create an instance of the class Database for managing database queries
-document = Document()
-database = Database('document-manager')
+# file names which are used in the program
+log_file = "document-manager.log"
+
+# directories to store files
+DOCUMENT_DIRECTORY = "/doc/"
+DATABASE_DIRECTORY = "/db/"
+LOG_FILE_DIRECTORY = "/log/"
+
+# returned values of database and document methods
+document_data = None
+database_data = []
+
+# database name, tables and query information
+db_name = "document_manager"
+db_tables = []
+db_select = {}
+db_insert = {}
+db_update = {}
+db_delete = {}
+
+##############################################################################
+#
+# create an instance of the class Document for managing document files and
+# information and also create an instance of the class Database for managing
+# database queries
+#
+
+document = Document(DOCUMENT_DIRECTORY)
+database = Database(db_name)
 
 
 ##############################################################################
@@ -15,15 +52,17 @@ database = Database('document-manager')
 #
 # 'register_scanned_document' and 'register_printed_document' take a
 # file_name as input and add the specific file information to the document
-# database. A copy of the file is saved in the folder 'docs/'
+# database. A copy of the file is saved in the folder 'doc/'
 #
 
 def register_scanned_document(file_name):
-    document.register(file_name)
+    document.save_scanned_document(file_name)
+    database.insert_scanned_document(db_insert)
 
 
 def register_printed_document(file_name):
-    document.register(file_name)
+    document.save_printed_document(file_name)
+    database.insert_printed_document(db_insert)
 
 
 ##############################################################################
@@ -43,11 +82,14 @@ def register_printed_document(file_name):
 #
 
 def get_linked_document(link_id):
-    document.get_linked_document_ids(link_id)
+    # database_data = database.select_ids_of_linked_documents(db_select)
+    # document_data = document.get_of_linked_documents(link_id)
+    pass
 
 
 def get_documents_of_set(set_id):
-    document.get_document_ids_of_set(set_id)
+    # document.get_document_ids_of_set(set_id)
+    pass
 
 
 ##############################################################################
@@ -66,11 +108,13 @@ def get_documents_of_set(set_id):
 #
 
 def get_document_information(doc_id):
-    document.get_document_information(doc_id)
+    # document.get_document_information(doc_id)
+    pass
 
 
 def update_document_information(doc_id, data):
-    document.update_document_information(doc_id, data)
+    # document.update_document_information(doc_id, data)
+    pass
 
 
 ##############################################################################
@@ -83,12 +127,28 @@ def update_document_information(doc_id, data):
 #
 
 def delete_document(doc_id):
-    document.delete_document(doc_id)
+    # document.delete_document(doc_id)
+    pass
 
 
 def delete_linked_documents(link_id):
-    document.delete_linked_documents(link_id)
+    # document.delete_linked_documents(link_id)
+    pass
 
 
 def delete_documents_of_set(set_id):
-    document.delete_documents_of_set(set_id)
+    # document.delete_documents_of_set(set_id)
+    pass
+
+
+##############################################################################
+#
+# Main method which handles the all running processes
+#
+
+def main(argv):
+    pass
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
