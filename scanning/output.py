@@ -1,8 +1,8 @@
+# import modules
 import logging
 
-logging.basicConfig(filename='app.log',
-                    filemode='w',
-                    format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='log/app.log', filemode='w', level=logging.DEBUG,
+                    format='[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s')
 
 
 # print a list to console
