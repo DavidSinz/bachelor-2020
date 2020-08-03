@@ -2,11 +2,11 @@ from os import remove
 from shutil import copy
 
 
-class FileManager:
+class FileMngr:
 
     ##########################################################################
     #
-    # Class FileManager
+    # Class FileMngr
     #
     # This class handles files. It copies files and saves them to a given
     # location. It also deletes files.

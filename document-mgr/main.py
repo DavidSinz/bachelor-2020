@@ -4,85 +4,11 @@
 # Used modules: logging, pathlib, sqlite3, sys
 #
 
-# import built in modules
 from sys import argv
+import configparser
 
-# import custom modules
-from document import Document
 from database import Database
-from file_mgr import FileManager
-
-# file names which are used in the program
-DB_FILE = "document_manager.db"
-LOG_FILE = "document-manager.log"
-
-# directories to store files
-DOCUMENT_DIRECTORY = "doc/"
-DATABASE_DIRECTORY = "db/"
-LOG_FILE_DIRECTORY = "log/"
-
-# returned values of database and document methods
-document_data = None
-database_data = []
-
-##############################################################################
-#
-# Database information
-#
-# The following variables are used to interact with the database. They are
-# dictionaries with keys as table names and the values as information for
-# database manipulation purposes.
-#
-# 'db_create' is used to create the following three tables:
-# - Table 'document': This table stores most of the information of a document
-# - Table 'printed_document': This table stores information about printed
-#   documents. It uses also data from 'document' and uses therefor a foreign.
-#   key from 'document'.
-# - Table 'scanned_document': This table stores information about scanned
-#   documents. It uses also data from 'document' and uses therefor a foreign
-#   key from 'document'.
-#
-# 'db_insert'
-#
-
-db_create = {
-    "document": [
-        "id INT PRIMARY KEY",
-        "code INT",
-        "file_name VARCHAR(50)",
-        "path VARCHAR(50)",
-        "insert_date DATETIME"
-    ],
-    "printed_document": [
-        "id INT PRIMARY KEY",
-        "document_id INT"
-    ],
-    "scanned_document": [
-        "id INT PRIMARY KEY",
-        "document_id INT"
-    ]
-}
-db_insert = {
-    "document": {"id": "0", "code": "123", "file_name": "'test.py'", "path": "'/test/'", "insert_date": "'hey'"},
-    "printed_document": {"id": "0", "document_id": "0"}
-}
-db_select = {
-    "document": {"column": ["*"]},
-    "printed_document": {"column": ["id"], "where": "id = 0"}
-}
-db_update = {
-    "document": {
-        "set": {"id": "100", "path": "'jksdhfkjsd'"},
-        "where": "id = 0"
-    },
-    "printed_document": {
-        "set": {"document_id": "3"}
-    }
-}
-db_delete = {
-    "document": {},
-    "printed_document": {"where": "id = 0"}
-}
+from filemngr import FileMngr
 
 ##############################################################################
 #
@@ -91,30 +17,55 @@ db_delete = {
 # database queries
 #
 
-document = Document()
-database = Database(DATABASE_DIRECTORY + DB_FILE, db_create)
-file_mgr = FileManager(DOCUMENT_DIRECTORY)
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+data_dir = FileMngr(config["directory"]["data_folder"])
+database = Database(config["data_file"]["database_file"])
 
 
 ##############################################################################
 #
 # Register a scanned document or an printed document
 #
-# 'register_scanned_document' and 'register_printed_document' take a
-# file_name as input and add the specific file information to the document
+# 'register_scanned_document' and 'register_printed_document' are taking a
+# 'file' as input and add the specific file information to the document
 # database. A copy of the file is saved in the folder 'doc/'
 #
 
 
-def register_printed_document(file_name):
-    document.save_printed_document(file_name)
-    db_data = document.get_
-    database.insert(db_data)
+def register_printed_document(file, code):
+    doc_id = database.select_max("document", "id")[0]
+    p_doc_id = database.select_max("printed_doc", "id")[0]
+    if doc_id is None:
+        doc_id = 0
+    else:
+        doc_id += 1
+    if p_doc_id is None:
+        p_doc_id = 0
+    else:
+        p_doc_id += 1
+    database.insert("document", config["db_columns"]["document"], f"{doc_id}, '{code}', 6, 5, '{file}', 'path', 'date'")
+    database.insert("printed_doc", config["db_columns"]["printed_doc"], f"{p_doc_id}, {doc_id}")
+    file_name = "p" + str(p_doc_id)
+    data_dir.save(file, file_name)
 
 
-def register_scanned_document(file_name, db_data):
-    document.save_scanned_document(file_name)
-    # database.insert(db_data)
+def register_scanned_document(file, code):
+    doc_id = database.select_max("document", "id")[0]
+    s_doc_id = database.select_max("scanned_doc", "id")[0]
+    if doc_id is None:
+        doc_id = 0
+    else:
+        doc_id += 1
+    if s_doc_id is None:
+        s_doc_id = 0
+    else:
+        s_doc_id += 1
+    database.insert("document", config["db_columns"]["document"], f"{doc_id}, '{code}', 6, 5, '{file}', 'path', 'date'")
+    database.insert("scanned_doc", config["db_columns"]["scanned_doc"], f"{s_doc_id}, {doc_id}")
+    file_name = "s" + str(s_doc_id)
+    data_dir.save(file, file_name)
 
 
 ##############################################################################
@@ -201,15 +152,22 @@ def delete_documents_of_set(set_id):
 #
 
 def main(args):
-    # register_printed_document("fdsf", db_insert)
+    for key, value in config["db_tables"].items():
+        database.create_table(key, value)
+
+    register_printed_document("test/example.pdf", "DL-L:123-S:343")
     # print(get_document_information(0, db_select))
     # update_document_information(0, db_update)
     # delete_document(0, db_delete)
     # print(get_document_information(0, db_select))
 
-    # file_mgr.save("test/example.jpg", "test")
-    # file_mgr.delete("test")
-    pass
+    # data_dir.save("test/example.jpg", "test")
+    # data_dir.delete("test")
+
+    # database.insert("document", "id, code, file_name, path, insert_date", "0, 12312, 'test.py', 'sfd', 'sdfs'")
+    # database.update("document", "id = 5", "id = 32")
+    # database.delete("document", "id = 5")
+    # print(database.select("document", "*"))
 
 
 if __name__ == "__main__":
