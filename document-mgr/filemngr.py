@@ -2,7 +2,7 @@ from os import remove
 from shutil import copy
 
 
-class FileMngr:
+class FileManager:
 
     ##########################################################################
     #
@@ -25,13 +25,21 @@ class FileMngr:
 
     ##########################################################################
     #
+    #
+    #
+
+    def extract_file_information(self, file):
+        print(file)
+
+    ##########################################################################
+    #
     # 'save'
     #
     # The method 'save' copies a given file to a specified directory. The
     # file will be saved under the given file name.
     #
 
-    def save(self, source, file):
+    def save_file_to_data_dir(self, source, file):
         copy(source, self.directory + file)
 
     ##########################################################################
@@ -41,5 +49,5 @@ class FileMngr:
     # The method 'delete' deletes a file from the specified directory.
     #
 
-    def delete(self, file):
+    def delete_data_from_data_dir(self, file):
         remove(self.directory + file)

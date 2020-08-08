@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h2>Linked printed and scanned document</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="col-md-12 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="{{ url_for('static', filename='img/file.png') }}">
+              <div class="card-body">
+                <p class="card-text" contenteditable="true">printed document<br>examplename.pdf<br>/home/david/Documents/example/<br></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" contenteditable="true">Delete</button>
+                  </div> <small class="text-muted">50 mb</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="col-md-12 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="https://pingendo.com/assets/photos/wireframe/photo-1.jpg">
+              <div class="card-body">
+                <p class="card-text">scanned document<br>examplename.pdf<br>/home/david/Documents/example/<br></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" contenteditable="true">Delete</button>
+                  </div> <small class="text-muted">50 mb</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h2>Documents of the same version</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="col-md-12 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="https://pingendo.com/assets/photos/wireframe/photo-1.jpg">
+              <div class="card-body">
+                <p class="card-text" contenteditable="true">printed document<br>examplename.pdf<br>/home/david/Documents/example/<br></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" contenteditable="true">Delete</button>
+                  </div> <small class="text-muted">50 mb</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="col-md-12 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="https://pingendo.com/assets/photos/wireframe/photo-1.jpg">
+              <div class="card-body">
+                <p class="card-text">scanned document<br>examplename.pdf<br>/home/david/Documents/example/<br></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" contenteditable="true">Delete</button>
+                  </div> <small class="text-muted">50 mb</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="col-md-12 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="https://pingendo.com/assets/photos/wireframe/photo-1.jpg">
+              <div class="card-body">
+                <p class="card-text" contenteditable="true">printed document<br>examplename.pdf<br>/home/david/Documents/example/<br></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" contenteditable="true">Delete</button>
+                  </div> <small class="text-muted">50 mb</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="col-md-12 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="https://pingendo.com/assets/photos/wireframe/photo-1.jpg">
+              <div class="card-body">
+                <p class="card-text">scanned document<br>examplename.pdf<br>/home/david/Documents/example/<br></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" contenteditable="true">Delete</button>
+                  </div> <small class="text-muted">50 mb</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

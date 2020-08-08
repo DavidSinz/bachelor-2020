@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="py-4 bg-light">
+    <div class="container">
+      <div class="row">
+        {% for doc in documents %}
+          <div class="col-md-4 p-3">
+            <div class="card box-shadow">
+              <img class="card-img-top" src="{{ url_for('static', filename='img/file.png') }}">
+              <div class="card-body">
+                <p class="card-text" contenteditable="true">
+                  Name: {{ doc[1] }}<br>
+                  Path: {{ doc[2] }}<br>
+                  Size: {{ doc[7] }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ url_for('doc_info', doc_id=doc[0]) }}">View</a>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                  </div>
+                  <small class="text-muted">
+                    {% if doc[8] == "print" %}
+                      printout
+                    {% elif doc[8] == "scan" %}
+                      scan
+                    {% endif %}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Document?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('view_docs', doc_id=1) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
