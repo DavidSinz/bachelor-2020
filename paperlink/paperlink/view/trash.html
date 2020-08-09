@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if documents|length <= 0 %}
+<div class="py-5 align-items-center d-flex">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-8 px-md-5">
+                <h1 class="display-3 mb-4">No documents ...</h1>
+                <p class="lead mb-4">There were no documents added to the collection. Start printing documents or add
+                    scan
+                    documents and the collection will be extended.</p>
+                <a href="{{ url_for('help') }}" class="btn btn-lg btn-primary">Help</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="py-4 bg-light">
+    <div class="container">
+        <div class="row">
+            {% for doc in documents %}
+            <div class="col-md-4 p-3 d-flex align-items-stretch">
+                <div class="card box-shadow">
+                    <img class="card-img-top" src="{{ url_for('static', filename='img/file.png') }}">
+                    <div class="card-body">
+                        <p class="card-text" contenteditable="true">
+                            Name: {{ doc[1] }}<br>
+                            Path: {{ doc[2] }}<br>
+                            Size: {{ doc[7] }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-sm btn-outline-secondary"
+                                    href="{{ url_for('trash', rec_id=doc[0]) }}">Recover</a>
+                                <button type="button" value="{{ doc[0] }}"
+                                    class="delete-btn btn btn-sm btn-outline-secondary" data-toggle="modal"
+                                    data-target="#deleteModal">Delete</button>
+                            </div>
+                            <small class="text-muted">
+                                {% if doc[8] == "print" %}
+                                printout
+                                {% elif doc[8] == "scan" %}
+                                scan
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Document?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form id="deleteForm" action="{{ url_for('trash', del_id=0) }}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

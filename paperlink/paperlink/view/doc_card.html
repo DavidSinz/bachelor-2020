@@ -1,0 +1,29 @@
+<div class="col-md-4 p-3 d-flex align-items-stretch">
+  <div class="card box-shadow">
+    <img class="card-img-top" src="{{ url_for('static', filename='img/file.png') }}">
+    <div class="card-body">
+      <p class="card-text" contenteditable="true">
+        Name: {{ doc[1] }}<br>
+        Path: {{ doc[2] }}<br>
+        Size: {{ doc[7] }}
+      </p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <a type="button" class="btn btn-sm btn-outline-secondary"
+            href="{{ url_for('doc_info', doc_id=doc[0]) }}">View</a>
+          <a type="button" class="btn btn-sm btn-outline-secondary"
+            href="{{ url_for('update', context=context, doc_id=doc[0]) }}">Edit</a>
+          <button type="button" value="{{ doc[0] }}" class="delete-btn btn btn-sm btn-outline-secondary" data-toggle="modal"
+            data-target="#deleteModal">Delete</button>
+        </div>
+        <small class="text-muted">
+          {% if doc[8] == "print" %}
+          printout
+          {% elif doc[8] == "scan" %}
+          scan
+          {% endif %}
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@ import sqlite3
 
 class Database:
 
-    #==========================================================================
+    # ==========================================================================
     #
     # class 'database'
     #
@@ -18,7 +18,7 @@ class Database:
     # - database engine: sqlite3
     #
 
-    #==========================================================================
+    # ==========================================================================
     #
     # constructor '__init__'
     #
@@ -27,21 +27,52 @@ class Database:
     #
 
     def __init__(self, db_file):
-        self.conn = sqlite3.connect(db_file)
-        self.curs = self.conn.cursor()
+        try:
+            self.conn = sqlite3.connect(db_file)
+        except Exception as e:
+            print(f"\nCould not connect to {db_file} database:\n{e}\n")
+        else:
+            self._init_cursor()
 
-    #==========================================================================
-    #
-    # destructor '__del__'
-    #
-    # This destructor disconnects from the database, if an instance gets
-    # deleted.
-    #
+    def _init_cursor(self):
+        try:
+            self.curs = self.conn.cursor()
+        except Exception as e:
+            print(f"\nCould not create database cursor:\n{e}\n")
+
+    def _commit(self, query):
+        try:
+            self.conn.execute(query)
+            self.conn.commit()
+        except Exception as e:
+            print(f"""\nCouldn't commit query to database:
+                \n{query}\nError:\n{e}\n""")
+
+    def _fetch_all(self, query):
+        try:
+            self.curs.execute(query)
+            return self.curs.fetchall()
+        except Exception as e:
+            print(f"""\nCouldn't fetch query result from database:
+                \n{query}\nError:\n{e}\n""")
+            return None
+
+    def _fetch_one(self, query):
+        try:
+            self.curs.execute(query)
+            return self.curs.fetchone()
+        except Exception as e:
+            print(f"""\nCouldn't fetch query result from database:
+                \n{query}\nError:\n{e}\n""")
+            return None
 
     def __del__(self):
-        self.conn.close()
+        try:
+            self.conn.close()
+        except Exception as e:
+            print(f"\nThe database connection can't be closed:\n{e}\n")
 
-    #==========================================================================
+    # ==========================================================================
     #
     # method 'create_table'
     #
@@ -52,11 +83,9 @@ class Database:
     #
 
     def create_table(self, table_name, columns):
-        query = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns});"
-        self.conn.execute(query)
-        self.conn.commit()
+        self._commit(f"CREATE TABLE IF NOT EXISTS {table_name} ({columns});")
 
-    #==========================================================================
+    # ==========================================================================
     #
     # method 'insert'
     #
@@ -65,11 +94,10 @@ class Database:
     #
 
     def insert(self, table_name, columns, values):
-        query = f"INSERT INTO {table_name} ({columns}) VALUES ({values});"
-        self.curs.execute(query)
-        self.conn.commit()
+        self._commit(f"""INSERT INTO {table_name} 
+            ({columns}) VALUES ({values});""")
 
-    #==========================================================================
+    # ==========================================================================
     #
     # method 'select'
     #
@@ -77,30 +105,28 @@ class Database:
     # parameter 'data' has the following format:
     #
 
-    def select(self, table_name, columns, where=None):
+    def select(self, table_name, columns, where=None, group_by=None, order_by=None):
         query = f"SELECT {columns} FROM {table_name};"
         if where is not None:
             query = query[:-1] + f" WHERE {where};"
-        self.curs.execute(query)
-        return self.curs.fetchall()
+        if group_by is not None:
+            query = query[:-1] + f" GROUP BY {group_by};"
+        if order_by is not None:
+            query = query[:-1] + f" ORDER BY {order_by};"
+        return self._fetch_all(query)
 
     def joined_select(self, table1, table2, join1, join2, columns, where=None):
         query = f"""SELECT {columns} FROM {table1} 
                 INNER JOIN {table2} ON {table1}.{join1} = {table2}.{join2};"""
         if where is not None:
             query = query[:-1] + f" WHERE {where};"
-        self.curs.execute(query)
-        return self.curs.fetchall()
+        return self._fetch_all(query)
 
     def select_max(self, table_name, column):
-        try:
-            query = f"SELECT max({column}) FROM {table_name};"
-            self.curs.execute(query)
-            return self.curs.fetchone()
-        except:
-            return None
+        query = f"SELECT max({column}) FROM {table_name};"
+        return self._fetch_one(query)
 
-    #==========================================================================
+    # ==========================================================================
     #
     # method 'update'
     #
@@ -112,10 +138,9 @@ class Database:
         query = f"UPDATE {table_name} SET {setter};"
         if where is not None:
             query = query[:-1] + f" WHERE {where};"
-        self.curs.execute(query)
-        self.conn.commit()
+        self._commit(query)
 
-    #==========================================================================
+    # ==========================================================================
     #
     # method 'delete'
     #
@@ -127,5 +152,4 @@ class Database:
         query = f"DELETE FROM {table_name};"
         if where is not None:
             query = query[:-1] + f" WHERE {where};"
-        self.curs.execute(query)
-        self.conn.commit()
+        self._commit(query)
