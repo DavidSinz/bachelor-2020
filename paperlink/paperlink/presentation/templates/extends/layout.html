@@ -29,9 +29,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar11">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"> <a class="nav-link" href="{{ url_for('view_docs', context='all') }}">All Docs</a> </li>
-          <li class="nav-item"> <a class="nav-link" href="{{ url_for('view_docs', context='print') }}">Printouts</a> </li>
-          <li class="nav-item"> <a class="nav-link" href="{{ url_for('view_docs', context='scan') }}">Scans</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="{{ url_for('all_docs') }}">All Docs</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="{{ url_for('print_docs') }}">Printouts</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="{{ url_for('scan_docs') }}">Scans</a> </li>
           <li class="nav-item"> <a class="nav-link" href="{{ url_for('trash') }}">Trash</a> </li>
         </ul>
         <a class="btn btn-primary navbar-btn ml-md-2" href="{{ url_for('help') }}">Help</a>

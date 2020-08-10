@@ -3,28 +3,19 @@ import sqlite3
 
 class Database:
 
-    # ==========================================================================
-    #
-    # class 'database'
-    #
-    # This class connects to a database and executes database operations.
-    # It is able to execute the following basic queries: create table, insert
-    # select, update and delete. By creating instances of this class, there
-    # will be created a database file if not already existing. Therefor it's
-    # possible to connect to different databases with different instances and
-    # it's also possible to connect to only one database with different
-    # instances  of this class.
-    #
-    # - database engine: sqlite3
-    #
+    """class 'database'
+    
+    This class connects to a database and executes database operations.
+    It is able to execute the following basic queries: create table, insert
+    select, update and delete. By creating instances of this class, there
+    will be created a database file if not already existing. Therefor it's
+    possible to connect to different databases with different instances and
+    it's also possible to connect to only one database with different
+    instances  of this class.
 
-    # ==========================================================================
-    #
-    # constructor '__init__'
-    #
-    # This constructor connects to a sqlite3 database which is stored in a
-    # 'database_file'.
-    #
+    - database engine: sqlite3
+    
+    """
 
     def __init__(self, db_file):
         try:
