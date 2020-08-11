@@ -7,3 +7,5 @@ dist
 .gitignore
 venv
 .idea
+linux-venv
+document-mgr

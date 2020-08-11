@@ -40,6 +40,12 @@ fi
 # convert PDF to Postscript
 #/usr/bin/pdftops $tempdir/pdf.out - 2>>$logfile
 
+#curl qrencode
+#curl localhost:5000/register_printout/
+#curl --data-urlencode "file_name=test.pdf" --data-urlencode "path=hey/hey/hey" --data-urlencode "code=1234567" localhost:5000/register_printout/
+
+#echo -n example/stuff | md5sum
+
 qrencode -t EPS -o $tempdir/qrcode.eps 'Hallo Welt!' 2>>$logfile
 
 echo -e $wmhead >> $tempdir/watermark.ps

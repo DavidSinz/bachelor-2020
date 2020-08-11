@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "extends/layout.html" %}
 {% block content %}
 {% if documents|length <= 0 %}
 <div class="py-5 align-items-center d-flex">
@@ -9,7 +9,7 @@
                 <p class="lead mb-4">There were no documents added to the collection. Start printing documents or add
                     scan
                     documents and the collection will be extended.</p>
-                <a href="{{ url_for('help') }}" class="btn btn-lg btn-primary">Help</a>
+                <a href="{{ url_for('presentation.help') }}" class="btn btn-lg btn-primary">Help</a>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <a type="button" class="btn btn-sm btn-outline-secondary"
-                                    href="{{ url_for('trash', rec_id=doc[0]) }}">Recover</a>
+                                    href="{{ url_for('presentation.trash', rec_id=doc[0]) }}">Recover</a>
                                 <button type="button" value="{{ doc[0] }}"
                                     class="delete-btn btn btn-sm btn-outline-secondary" data-toggle="modal"
                                     data-target="#deleteModal">Delete</button>
@@ -64,7 +64,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <form id="deleteForm" action="{{ url_for('trash', del_id=0) }}" method="POST">
+                <form id="deleteForm" action="{{ url_for('presentation.trash', del_id=0) }}" method="POST">
                     <input class="btn btn-danger" type="submit" value="Delete">
                 </form>
             </div>

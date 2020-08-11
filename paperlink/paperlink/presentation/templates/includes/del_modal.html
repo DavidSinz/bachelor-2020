@@ -10,7 +10,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <form id="deleteForm" action="{{ url_for('view_docs', context=context, del_id=0) }}" method="POST">
+        <form id="deleteForm" action="{{ url_for('presentation.all_docs') }}" method="POST">
           <input class="btn btn-danger" type="submit" value="Delete">
         </form>
       </div>
