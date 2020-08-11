@@ -1,8 +1,12 @@
 from flask import Flask, Blueprint
 
+from datamanager import main
+
 app = Blueprint("datamanager", __name__)
 
 
-@app.route("/datamanager")
+print(main.get_all_documents())
+
+@app.route("/get_full_table")
 def index():
     return "datamanager"

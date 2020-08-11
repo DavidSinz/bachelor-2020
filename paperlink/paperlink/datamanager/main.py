@@ -9,10 +9,10 @@ import sys
 import ast
 import getopt
 
-from database import Database
+from datamanager.database import Database
 
 # Database information
-db_path = "db/"
+db_path = "datamanager/db/"
 db_name = "document.db"
 db_table = "document"
 db_create = """id           INT             PRIMARY KEY, 

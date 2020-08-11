@@ -5,15 +5,13 @@ import ghostscript
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
 
-from server import Server
+
+# folder for temporary files
+tmp_dir = "/tmp/"
+
 
 # file variables
 file_ext = ["pdf", "png", "jpg", "jpeg", "tiff", "tif"]
-
-
-# socket information
-host = '127.0.0.1'
-port = 5500
 
 
 def _decode_marker(image):
@@ -48,20 +46,39 @@ def _is_file_format_supported(file_name):
     print(ext)
 
 
-def get_code_value_of_document(input_file):
+def encode_document():
     pass
 
 
-def get_path_of_linked_source(doc_id):
+def identify_document():
     pass
 
 
-def get_all_documents():
+def register_document():
+    pass
+
+
+def entity_linkage():
+    pass
+
+
+def version_history():
+    pass
+
+
+def get_information():
+    return "hey"
+
+
+def update_information():
+    pass
+
+
+def delete_information():
     pass
 
 
 def main():
-    #server = Server(host, port)
     pass
 
 

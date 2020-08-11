@@ -1,41 +1,11 @@
-"""PaperLink
-
-This script allows the user to make printed documents identifiable. A small 
-qr code is added to every document, that will be printed out. When the user 
-scans this paper document, the qr code will be identified by the program and 
-the scan file can be traced back to it's original digital file. 
-"""
-import os
-from flask import Flask, Blueprint, render_template, Response, request, redirect, url_for
-
-
-"""id, name, path, size, type, dumped, screenshot"""
-
-documents = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"},
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "scan", "dumped": 0, "screenshot": "/home/david/test.jpg"},
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
-
-printouts = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"},
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
-
-scans = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "scan", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
+import requests
+from flask import Flask, Blueprint, render_template, request
 
 app = Blueprint("presentation",
                 __name__,
-                template_folder='templates',
-                static_folder="static")
+                template_folder="templates",
+                static_folder="static",
+                static_url_path="/presentation/static")
 
 
 @app.route("/")
@@ -45,27 +15,32 @@ def index():
 
 @app.route("/all_docs")
 def all_docs():
-    return render_template("view_docs.html", documents=documents)
+    data = get_document_data("all")
+    return render_template("view_docs.html", documents=data)
 
 
 @app.route("/print_docs")
 def print_docs():
-    return render_template("view_docs.html", documents=printouts)
+    data = get_document_data("print")
+    return render_template("view_docs.html", documents=data)
 
 
 @app.route("/scan_docs")
 def scan_docs():
-    return render_template("view_docs.html", documents=scans)
+    data = get_document_data("scan")
+    return render_template("view_docs.html", documents=data)
 
 
 @app.route('/doc_info')
 def doc_info():
-    return render_template('doc_info.html')
+    data = get_document_data("info")
+    return render_template('doc_info.html', documents=data)
 
 
 @app.route('/trash')
 def trash():
-    return render_template("trash.html", documents=documents)
+    data = get_document_data("dumped")
+    return render_template("trash.html", documents=data)
 
 
 @app.route('/update')
@@ -76,3 +51,19 @@ def update():
 @app.route('/help')
 def help():
     return render_template("help.html")
+
+
+def get_document_data(doc_type="all"):
+    if doc_type == "all":
+        token = "all_documents"
+    elif doc_type == "print":
+        token = "print_documents"
+    elif doc_type == "scan":
+        token = "scan_documents"
+    elif doc_type == "info":
+        token = "doc_information"
+    elif doc_type == "dumped":
+        token = "dumped_documents"
+    url = request.host_url + token
+    result = requests.post(url)
+    return result.json()

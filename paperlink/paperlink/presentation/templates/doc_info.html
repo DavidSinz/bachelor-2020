@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "extends/layout.html" %}
 {% block content %}
 <div class="py-5">
   <div class="container">
@@ -12,7 +12,7 @@
       {% include "doc_card.html" %}
       <div class="col-md-4">
         <div class="col-md-12 p-3">
-          <img class="link-symbol" src="{{ url_for('static', filename='img/arrow.png') }}">
+          <img class="link-symbol" src="{{ url_for('presentation.static', filename='img/arrow.png') }}">
         </div>
       </div>
       {% set doc = linked_docs[1] %}
@@ -21,7 +21,7 @@
       {% else %}
       <div class="col-md-4 p-3 d-flex align-items-stretch">
         <div class="card box-shadow">
-          <img class="card-img-top" src="{{ url_for('static', filename='img/file.png') }}">
+          <img class="card-img-top" src="{{ url_for('presentation.static', filename='img/file.png') }}">
           <div class="card-body">
             <p class="card-text" contenteditable="true">
               There is currently no linked document
@@ -46,7 +46,7 @@
       {% include "doc_card.html" %}
       <div class="col-md-4">
         <div class="col-md-12 p-3">
-          <img class="link-symbol" src="{{ url_for('static', filename='img/arrow.png') }}">
+          <img class="link-symbol" src="{{ url_for('presentation.static', filename='img/arrow.png') }}">
         </div>
       </div>
       {% set doc = docs_of_set[i+1] %}
@@ -55,7 +55,7 @@
       {% else %}
       <div class="col-md-4 p-3 d-flex align-items-stretch">
         <div class="card box-shadow">
-          <img class="card-img-top" src="{{ url_for('static', filename='img/file.png') }}">
+          <img class="card-img-top" src="{{ url_for('presentation.static', filename='img/file.png') }}">
           <div class="card-body">
             <p class="card-text" contenteditable="true">
               There is currently no linked document
