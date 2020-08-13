@@ -8,16 +8,16 @@
       </div>
     </div>
     <div class="row">
-      {% set doc = linked_docs[0] %}
-      {% include "doc_card.html" %}
+      {% set doc = documents["linkage"][0] %}
+      {% include "includes/doc_card.html" %}
       <div class="col-md-4">
         <div class="col-md-12 p-3">
           <img class="link-symbol" src="{{ url_for('presentation.static', filename='img/arrow.png') }}">
         </div>
       </div>
-      {% set doc = linked_docs[1] %}
+      {% set doc = documents["linkage"][1] %}
       {% if doc != None %}
-      {% include "doc_card.html" %}
+      {% include "includes/doc_card.html" %}
       {% else %}
       <div class="col-md-4 p-3 d-flex align-items-stretch">
         <div class="card box-shadow">
@@ -41,17 +41,17 @@
       </div>
     </div>
     <div class="row">
-      {% for i in range(0, docs_of_set|length, 2) %}
-      {% set doc = docs_of_set[i] %}
-      {% include "doc_card.html" %}
+      {% for group in documents["version"] %}
+      {% set doc = group[0] %}
+      {% include "includes/doc_card.html" %}
       <div class="col-md-4">
         <div class="col-md-12 p-3">
           <img class="link-symbol" src="{{ url_for('presentation.static', filename='img/arrow.png') }}">
         </div>
       </div>
-      {% set doc = docs_of_set[i+1] %}
+      {% set doc = group[1] %}
       {% if doc != None %}
-      {% include "doc_card.html" %}
+      {% include "includes/doc_card.html" %}
       {% else %}
       <div class="col-md-4 p-3 d-flex align-items-stretch">
         <div class="card box-shadow">
@@ -68,5 +68,6 @@
     </div>
   </div>
 </div>
-{% include "del_modal.html" %}
+{% include "includes/del_modal.html" %}
+{% include "includes/edit_modal.html" %}
 {% endblock %}

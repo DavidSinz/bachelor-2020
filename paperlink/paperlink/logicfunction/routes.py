@@ -1,64 +1,36 @@
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, redirect, url_for, request
 
-from logicfunction import main
+from logicfunction import logicfunc as lfunc
 
 app = Blueprint("logicfunction", __name__)
 
 
-"""id, name, path, size, type, dumped, screenshot"""
-
-all_documents = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"},
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "scan", "dumped": 0, "screenshot": "/home/david/test.jpg"},
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
-
-print_documents = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"},
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "print", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
-
-scan_documents = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "scan", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
-
-dumped_documents = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "scan", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
-
-doc_information = [
-    {"id": 0, "name": "test.py", "path": "/example/", "size": "50 MB",
-        "type": "scan", "dumped": 0, "screenshot": "/home/david/test.jpg"}
-]
+@app.route('/dump/<string:context>/<int:doc_id>', methods=['POST'])
+def dump(context, doc_id):
+    lfunc.dump_document(doc_id)
+    return redirect(url_for(context))
 
 
-@app.route('/all_documents', methods=['POST'])
-def get_all_documents():
-    return jsonify(all_documents)
+@app.route('/delete/<int:doc_id>', methods=['POST'])
+def delete(doc_id):
+    lfunc.delete_document(doc_id)
+    return redirect(url_for("presentation.trash"))
 
 
-@app.route('/print_documents', methods=['POST'])
-def get_print_documents():
-    return jsonify(print_documents)
+@app.route('/update/<string:context>/<int:doc_id>', methods=['POST'])
+def update(context, doc_id):
+    source_path = request.form['pathInputField']
+    lfunc.update_document(doc_id, source_path)
+    return redirect(url_for(context))
 
+@app.route('/register_print', methods=['POST'])
+def register_print():
+    source_path = request.form['printDocPath']
+    lfunc.register_print_document(source_path)
+    return redirect(url_for("presentation.index"))
 
-@app.route('/scan_documents', methods=['POST'])
-def get_scan_documents():
-    return jsonify(scan_documents)
-
-
-@app.route('/doc_information', methods=['POST'])
-def get_doc_information():
-    return jsonify(doc_information)
-
-
-@app.route('/dumped_documents', methods=['POST'])
-def get_dumped_documents():
-    return jsonify(dumped_documents)
+@app.route('/register_scan', methods=['POST'])
+def register_scan():
+    source_path = request.form['scanDocPath']
+    lfunc.register_scan_document(source_path)
+    return redirect(url_for("presentation.index"))

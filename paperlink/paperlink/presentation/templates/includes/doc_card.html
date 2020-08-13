@@ -11,8 +11,8 @@
         <div class="btn-group">
           <a type="button" class="btn btn-sm btn-outline-secondary"
             href="{{ url_for('presentation.doc_info', doc_id=doc['id']) }}">View</a>
-          <a type="button" class="btn btn-sm btn-outline-secondary"
-            href="{{ url_for('presentation.update', context=context, doc_id=doc['id']) }}">Edit</a>
+          <button type="button" value="{{ doc['id'] }}" class="edit-btn btn btn-sm btn-outline-secondary" data-toggle="modal"
+            data-target="#editModal">Edit</button>
           <button type="button" value="{{ doc['id'] }}" class="delete-btn btn btn-sm btn-outline-secondary" data-toggle="modal"
             data-target="#deleteModal">Delete</button>
         </div>

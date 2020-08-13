@@ -6,7 +6,7 @@ def create_app():
 
     from logicfunction.routes import app as func
     from presentation.routes import app as pres
-    from datamanager.routes import app as dmgr
+    from datamanager.datamngr import app as dmgr
 
     app.register_blueprint(func)
     app.register_blueprint(pres)

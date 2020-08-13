@@ -24,22 +24,22 @@
                     <img class="card-img-top" src="{{ url_for('presentation.static', filename='img/file.png') }}">
                     <div class="card-body">
                         <p class="card-text" contenteditable="true">
-                            Name: {{ doc[1] }}<br>
-                            Path: {{ doc[2] }}<br>
-                            Size: {{ doc[7] }}
+                            Name: {{ doc["name"] }}<br>
+                            Path: {{ doc["path"] }}<br>
+                            Size: {{ doc["size"] }}
                         </p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <a type="button" class="btn btn-sm btn-outline-secondary"
-                                    href="{{ url_for('presentation.trash', rec_id=doc[0]) }}">Recover</a>
-                                <button type="button" value="{{ doc[0] }}"
+                                    href="{{ url_for('presentation.trash', rec_id=doc['id']) }}">Recover</a>
+                                <button type="button" value="{{ doc['id'] }}"
                                     class="delete-btn btn btn-sm btn-outline-secondary" data-toggle="modal"
                                     data-target="#deleteModal">Delete</button>
                             </div>
                             <small class="text-muted">
-                                {% if doc[8] == "print" %}
+                                {% if doc["type"] == "print" %}
                                 printout
-                                {% elif doc[8] == "scan" %}
+                                {% elif doc["type"] == "scan" %}
                                 scan
                                 {% endif %}
                             </small>
@@ -64,7 +64,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <form id="deleteForm" action="{{ url_for('presentation.trash', del_id=0) }}" method="POST">
+                <form id="deleteForm" action="{{ url_for('logicfunction.delete', doc_id=0) }}" method="POST">
                     <input class="btn btn-danger" type="submit" value="Delete">
                 </form>
             </div>

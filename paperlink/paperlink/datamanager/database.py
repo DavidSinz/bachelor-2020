@@ -113,8 +113,11 @@ class Database:
             query = query[:-1] + f" WHERE {where};"
         return self._fetch_all(query)
 
-    def select_max(self, table_name, column):
-        query = f"SELECT max({column}) FROM {table_name};"
+    def select_max(self, table_name, column, where=None):
+        if where != None:
+            query = f"SELECT max({column}) FROM {table_name} WHERE {where};"
+        else:
+            query = f"SELECT max({column}) FROM {table_name};"
         return self._fetch_one(query)
 
     # ==========================================================================

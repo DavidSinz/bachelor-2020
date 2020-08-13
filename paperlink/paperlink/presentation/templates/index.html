@@ -9,9 +9,33 @@
         <p class="mb-4">This tool will manage your printed and scanned documents. Printed documents will automatically
           be added and scanned documents can be uploaded here. Every uploaded scan shows you where the original source
           document to this scan file is located. Try it out and have fun!</p>
-        <form class="form-inline d-flex justify-content-center">
-          <div class="input-group"> <input type="email" class="form-control" placeholder="Your email" id="form1">
-            <div class="input-group-append"> <button class="btn btn-primary" type="button">Subscribe</button> </div>
+
+        <p>print</p>
+        <form action="{{ url_for('logicfunction.register_print') }}" method="POST"
+          class="form-inline d-flex justify-content-center">
+          <div class="input-group">
+            <input type="text" name="printDocPath" class="form-control" placeholder="print file path" id="form1">
+            <div class="input-group-append"><button class="btn btn-primary" type="submit">Subscribe</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="py-5 text-center"
+  style="background-image: linear-gradient(to left bottom, rgba(189, 195, 199, .75), rgba(44, 62, 80, .75)); background-size: 100%;">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto col-md-6">
+        <h1>PaperLink</h1>
+        <p class="mb-4">This tool will manage your printed and scanned documents. Printed documents will automatically
+          be added and scanned documents can be uploaded here. Every uploaded scan shows you where the original source
+          document to this scan file is located. Try it out and have fun!</p>
+          <p>scan</p>
+        <form action="{{ url_for('logicfunction.register_scan') }}" method="POST" class="form-inline d-flex justify-content-center">
+          <div class="input-group">
+            <input type="text" name="scanDocPath" class="form-control" placeholder="scan" id="form1">
+            <div class="input-group-append"> <button class="btn btn-primary" type="submit">Subscribe</button> </div>
           </div>
         </form>
       </div>
