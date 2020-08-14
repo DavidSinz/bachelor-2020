@@ -17,7 +17,35 @@ class Database:
     
     """
 
+    """Summary of class here.
+
+    Longer class information....
+    Longer class information....
+
+    Attributes:
+        likes_spam: A boolean indicating if we like SPAM or not.
+        eggs: An integer count of the eggs we have laid.
+    """
+
+    """Helper to print a traceback from the timed code.
+
+    Typical use:
+
+        t = Timer(...)       # outside the try/except
+        try:
+            t.timeit(...)    # or t.repeat(...)
+        except:
+            t.print_exc()
+
+    The advantage over the standard traceback is that source lines
+    in the compiled template will be displayed.
+
+    The optional file argument directs where the traceback is
+    sent; it defaults to sys.stderr.
+    """
+
     def __init__(self, db_file):
+        """Inits SampleClass with blah."""
         try:
             self.conn = sqlite3.connect(db_file)
         except Exception as e:
